@@ -41,6 +41,8 @@ void quickSort(Produto p[], int inicio, int fim);
 int particionar(Produto p[], int inicio, int fim);
 void executarBubble(Produto original[]);
 void executarQuick(Produto original[]);
+void compararAlgoritmos(Produto original[]);
+void limparBuffer(void);
 
 int main(void) {
     /* Array com os 12 registros ORIGINAIS (desordenados).
@@ -60,8 +62,32 @@ int main(void) {
         {"Regata dry fit",     42, 34.90f},
         {"Macacao",             9, 199.90f}
     };
-    executarBubble(estoque);
-    executarQuick(estoque);
+    int opcao;
+
+    do {
+        printf("\n==================================================\n");
+        printf("   CONTROLE DE ESTOQUE - LOJA DE ROUPAS\n");
+        printf("   Criterio: quantidade em estoque (CRESCENTE)\n");
+        printf("==================================================\n");
+        printf("  1 - Ordenar com Bubble Sort\n");
+        printf("  2 - Ordenar com Quick Sort\n");
+        printf("  3 - Comparar os dois algoritmos\n");
+        printf("  0 - Sair\n");
+        printf("Opcao: ");
+
+        if (scanf("%d", &opcao) != 1) {
+            opcao = -1;              /* entrada invalida (ex.: letra) */
+        }
+        limparBuffer();
+
+        switch (opcao) {
+            case 1: executarBubble(estoque); break;
+            case 2: executarQuick(estoque); break;
+            case 3: compararAlgoritmos(estoque); break;
+            case 0: printf("Encerrando o programa...\n"); break;
+            default: printf("Opcao invalida! Tente novamente.\n");
+        }
+    } while (opcao != 0);
 
     return 0;
 }
@@ -224,3 +250,37 @@ void executarQuick(Produto original[]) {
            ESTOQUE_MINIMO);
 }
 
+/* Roda os dois algoritmos sobre os mesmos dados e compara */
+void compararAlgoritmos(Produto original[]) {
+    Produto copiaB[TAM], copiaQ[TAM];
+    int compB, trocB, compQ, trocQ;
+
+    copiarProdutos(original, copiaB, TAM);
+    copiarProdutos(original, copiaQ, TAM);
+
+    comparacoes = 0; trocas = 0;
+    bubbleSort(copiaB, TAM);
+    compB = comparacoes; trocB = trocas;
+
+    comparacoes = 0; trocas = 0;
+    quickSort(copiaQ, 0, TAM - 1);
+    compQ = comparacoes; trocQ = trocas;
+
+    printf("\n--------------- COMPARACAO ---------------\n");
+    printf("%-14s %12s %8s\n", "Algoritmo", "Comparacoes", "Trocas");
+    printf("%-14s %12d %8d\n", "Bubble Sort", compB, trocB);
+    printf("%-14s %12d %8d\n", "Quick Sort", compQ, trocQ);
+    printf("\nOs dois algoritmos chegaram ao mesmo resultado:\n");
+    mostrarProdutos(copiaQ, TAM);
+    printf("\nO Quick Sort costuma fazer menos comparacoes porque divide\n");
+    printf("o problema em partes menores, em vez de comparar vizinhos\n");
+    printf("varias vezes como o Bubble Sort.\n");
+}
+
+/* Descarta o resto da linha digitada (inclusive o Enter) */
+void limparBuffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        /* apenas descarta */
+    }
+}
