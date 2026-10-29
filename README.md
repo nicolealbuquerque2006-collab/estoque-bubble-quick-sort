@@ -3,8 +3,6 @@
 **Disciplina:** Algoritmos e Pensamento Computacional — UDF
 **Autora:** Nicole Albuquerque ([@nicolealbuquerque2006-collab](https://github.com/nicolealbuquerque2006-collab))
 
-🔗 **Executar online:** COLE_AQUI_O_LINK_DO_ONLINEGDB
-
 ---
 
 ## Situação-problema
@@ -55,11 +53,6 @@ Os dois chegam ao mesmo resultado, mas o Quick Sort faz menos da metade das comp
 
 ## Como executar
 
-### Online (sem instalar nada)
-Acesse o link do OnlineGDB no topo desta página e clique em **Run**.
-
-### No computador
-
 ```bash
 gcc estoque.c -o estoque
 ./estoque        # Linux/macOS
@@ -81,30 +74,4 @@ Ao executar o programa, aparece este menu:
   0 - Sair
 ```
 
-Saída da opção `2` (Quick Sort), após a tabela "antes":
-
-```
------- DADOS APOS A ORDENACAO (QUICK SORT) -------
-Pos  Produto                   Qtd      Preco   Situacao
-1    Saia midi                   2     119.90   REPOR
-2    Vestido longo               3     219.90   REPOR
-3    Moletom canguru             5     159.90   REPOR
-4    Short de linho              6      89.90   REPOR
-5    Calca jeans                 8     129.90   REPOR
-6    Macacao                     9     199.90   REPOR
-7    Camisa social              11     149.90   OK
-8    Jaqueta corta-vento        14     189.90   OK
-9    Blusa de tricot            19      99.90   OK
-10   Camiseta basica            25      39.90   OK
-11   Bermuda moletom            31      69.90   OK
-12   Regata dry fit             42      34.90   OK
-
-Comparacoes: 25 | Trocas: 15
-```
-
-## Tecnologias
-
-- Linguagem **C** (biblioteca `stdio.h`)
-- Compilador **GCC**
-- **OnlineGDB** para execução online
-- **Git** e **GitHub** para versionamento
+Saída da opção `2` (Quick
