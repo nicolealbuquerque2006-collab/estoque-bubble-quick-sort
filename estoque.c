@@ -28,8 +28,16 @@ typedef struct {
     float preco;
 } Produto;
 
+/* Contadores usados para comparar o desempenho dos algoritmos */
+int comparacoes = 0;
+int trocas = 0;
+
 /* ---------- Prototipos das funcoes ---------- */
+void copiarProdutos(Produto origem[], Produto destino[], int n);
 void mostrarProdutos(Produto p[], int n);
+void trocar(Produto *a, Produto *b);
+void bubbleSort(Produto p[], int n);
+void executarBubble(Produto original[]);
 
 int main(void) {
     /* Array com os 12 registros ORIGINAIS (desordenados).
@@ -49,10 +57,65 @@ int main(void) {
         {"Regata dry fit",     42, 34.90f},
         {"Macacao",             9, 199.90f}
     };
-    printf("Estoque cadastrado:\n");
-    mostrarProdutos(estoque, TAM);
+    executarBubble(estoque);
 
     return 0;
+}
+
+/* ============================================================
+ *  BUBBLE SORT
+ *  Compara elementos VIZINHOS (j e j+1) e troca os dois quando
+ *  estao fora de ordem. A cada passada, o maior valor "sobe como
+ *  uma bolha" para o final do array.
+ *  Complexidade: O(n^2) no pior caso e no caso medio.
+ * ============================================================ */
+void bubbleSort(Produto p[], int n) {
+    int i, j, trocou;
+
+    /* Laco externo: cada volta e uma "passada" pelo array.
+       Sao necessarias no maximo n-1 passadas. */
+    for (i = 0; i < n - 1; i++) {
+        trocou = 0;
+
+        /* Laco interno: compara os pares vizinhos.
+           Vai ate n-1-i porque os ultimos i elementos ja estao
+           na posicao final (as "bolhas" que ja subiram). */
+        for (j = 0; j < n - 1 - i; j++) {
+            comparacoes++;
+
+            /* Se o da esquerda tem MAIS estoque que o da direita,
+               estao fora de ordem: troca os dois de lugar. */
+            if (p[j].quantidade > p[j + 1].quantidade) {
+                trocar(&p[j], &p[j + 1]);
+                trocou = 1;
+            }
+        }
+
+        /* Se uma passada inteira nao fez nenhuma troca,
+           o array ja esta ordenado e o algoritmo pode parar. */
+        if (!trocou) {
+            break;
+        }
+    }
+}
+
+/* Troca dois produtos de posicao usando uma variavel auxiliar.
+   Como o registro inteiro e trocado, nome, quantidade e preco
+   continuam sempre juntos. */
+void trocar(Produto *a, Produto *b) {
+    Produto aux = *a;
+    *a = *b;
+    *b = aux;
+    trocas++;
+}
+
+/* Copia os registros originais para outro array, para que
+   cada algoritmo ordene os MESMOS dados de partida. */
+void copiarProdutos(Produto origem[], Produto destino[], int n) {
+    int i;
+    for (i = 0; i < n; i++) {
+        destino[i] = origem[i];
+    }
 }
 
 /* Mostra os produtos em forma de tabela */
@@ -65,4 +128,22 @@ void mostrarProdutos(Produto p[], int n) {
                p[i].quantidade, p[i].preco,
                p[i].quantidade < ESTOQUE_MINIMO ? "REPOR" : "OK");
     }
+}
+
+void executarBubble(Produto original[]) {
+    Produto copia[TAM];
+    copiarProdutos(original, copia, TAM);
+
+    printf("\n------------ DADOS ANTES DA ORDENACAO ------------\n");
+    mostrarProdutos(copia, TAM);
+
+    comparacoes = 0;
+    trocas = 0;
+    bubbleSort(copia, TAM);
+
+    printf("\n------ DADOS APOS A ORDENACAO (BUBBLE SORT) ------\n");
+    mostrarProdutos(copia, TAM);
+    printf("\nComparacoes: %d | Trocas: %d\n", comparacoes, trocas);
+    printf("Produtos com menos de %d unidades devem ser repostos (REPOR).\n",
+           ESTOQUE_MINIMO);
 }
