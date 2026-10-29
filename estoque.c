@@ -37,7 +37,10 @@ void copiarProdutos(Produto origem[], Produto destino[], int n);
 void mostrarProdutos(Produto p[], int n);
 void trocar(Produto *a, Produto *b);
 void bubbleSort(Produto p[], int n);
+void quickSort(Produto p[], int inicio, int fim);
+int particionar(Produto p[], int inicio, int fim);
 void executarBubble(Produto original[]);
+void executarQuick(Produto original[]);
 
 int main(void) {
     /* Array com os 12 registros ORIGINAIS (desordenados).
@@ -58,6 +61,7 @@ int main(void) {
         {"Macacao",             9, 199.90f}
     };
     executarBubble(estoque);
+    executarQuick(estoque);
 
     return 0;
 }
@@ -97,6 +101,60 @@ void bubbleSort(Produto p[], int n) {
             break;
         }
     }
+}
+
+/* ============================================================
+ *  QUICK SORT
+ *  Estrategia "dividir para conquistar":
+ *   1. Escolhe um elemento chamado PIVO (aqui, o ultimo).
+ *   2. Particiona: coloca os menores que o pivo a esquerda e os
+ *      maiores a direita. O pivo fica na sua posicao definitiva.
+ *   3. Repete o processo (recursao) em cada lado do pivo.
+ *  Complexidade: O(n log n) no caso medio, O(n^2) no pior caso.
+ * ============================================================ */
+void quickSort(Produto p[], int inicio, int fim) {
+    int posPivo;
+
+    /* Caso base: se o trecho tem 0 ou 1 elemento, ja esta ordenado */
+    if (inicio < fim) {
+        /* Separa o trecho e descobre onde o pivo ficou */
+        posPivo = particionar(p, inicio, fim);
+
+        /* Ordena recursivamente a parte da esquerda (menores) */
+        quickSort(p, inicio, posPivo - 1);
+
+        /* Ordena recursivamente a parte da direita (maiores) */
+        quickSort(p, posPivo + 1, fim);
+    }
+}
+
+/* Particionamento (esquema de Lomuto):
+   percorre o trecho e leva para a esquerda todos os produtos
+   com quantidade MENOR que a do pivo. */
+int particionar(Produto p[], int inicio, int fim) {
+    int pivo = p[fim].quantidade;  /* pivo = ultimo elemento do trecho */
+    int i = inicio - 1;            /* fim da regiao dos "menores"      */
+    int j;
+
+    for (j = inicio; j < fim; j++) {
+        comparacoes++;
+
+        /* Se o elemento atual e menor que o pivo,
+           aumenta a regiao dos menores e coloca ele la dentro. */
+        if (p[j].quantidade < pivo) {
+            i++;
+            if (i != j) {
+                trocar(&p[i], &p[j]);
+            }
+        }
+    }
+
+    /* Coloca o pivo logo depois da regiao dos menores:
+       essa e a posicao definitiva dele no array ordenado. */
+    if (i + 1 != fim) {
+        trocar(&p[i + 1], &p[fim]);
+    }
+    return i + 1;
 }
 
 /* Troca dois produtos de posicao usando uma variavel auxiliar.
@@ -147,3 +205,22 @@ void executarBubble(Produto original[]) {
     printf("Produtos com menos de %d unidades devem ser repostos (REPOR).\n",
            ESTOQUE_MINIMO);
 }
+
+void executarQuick(Produto original[]) {
+    Produto copia[TAM];
+    copiarProdutos(original, copia, TAM);
+
+    printf("\n------------ DADOS ANTES DA ORDENACAO ------------\n");
+    mostrarProdutos(copia, TAM);
+
+    comparacoes = 0;
+    trocas = 0;
+    quickSort(copia, 0, TAM - 1);
+
+    printf("\n------ DADOS APOS A ORDENACAO (QUICK SORT) -------\n");
+    mostrarProdutos(copia, TAM);
+    printf("\nComparacoes: %d | Trocas: %d\n", comparacoes, trocas);
+    printf("Produtos com menos de %d unidades devem ser repostos (REPOR).\n",
+           ESTOQUE_MINIMO);
+}
+
